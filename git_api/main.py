@@ -5,7 +5,11 @@ from sqlalchemy.orm import Session
 from typing import Optional
 from . import crud, models, schemas
 from .database import SessionLocal, engine
+from os import getcwd
 from fastapi.middleware.cors import CORSMiddleware
+
+from git import Repo
+
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
@@ -23,6 +27,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+directory = getcwd()
+repo = Repo(directory)
+
 # Dependency
 def get_db():
     db = SessionLocal()
@@ -57,3 +65,35 @@ def read_pr(pr_id: int, db: Session = Depends(get_db)):
 def update_pr(pr_id: int, status: str, db: Session = Depends(get_db)):
     return crud.update_pr(db=db, id=pr_id, new_status=status)
 
+
+@app.get('/commits')
+def get_commits(response:Response, branch: Optional[str] = None, position: Optional[int] = 0):
+    branch = branch if branch else 'HEAD'
+    valid_branches = get_branches()
+    valid_branches = valid_branches.get('branches',[])
+    if branch not in valid_branches and branch != 'HEAD':
+        response.status_code = 404
+        return {'commits':[]}
+    commits = list(repo.iter_commits(branch))
+    commits = [{'name': str(c.author), 'email': c.author.email,'msg': c.message, 'date': c.authored_date, 'files_change': len(c.stats.files)} for c in commits]
+    #'hash': c.hexsha
+    return {'commits':commits}  
+
+@app.get('/branches')
+def get_branches():
+	branches = repo.branches
+	branches = [branch.path.split('/')[-1] for branch in branches]
+	return {'branches':branches}
+
+@app.put('/pr-merge/{pr_id}')
+def merge_pr(response:Response,origin:str, destiny:str, pr_id: int, db: Session = Depends(get_db)):
+    try:
+        repo.git.switch(origin)
+        gitResponse = repo.git.merge(destiny)
+        crud.update_pr(db=db, id=pr_id, new_status='merged')
+        return {'msg':gitResponse}
+    except Exception as error:
+        errdict = error.__dict__
+        stderr = errdict.get('stderr') or ''
+        response.status_code = 400
+        return {'msg':stderr} 
