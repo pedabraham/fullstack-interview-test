@@ -34,7 +34,7 @@ export default function Prs() {
         </Link>
         <div style={{
           display: 'grid',
-          gridTemplateColumns: '300px auto'}} ClassName="view">
+          gridTemplateColumns: '300px auto'}}>
           <nav ClassName="left">
             {bhtml}
           </nav>
