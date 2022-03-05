@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import React, { useEffect, useState } from 'react';
 import { Link, Outlet } from "react-router-dom";
-
+import '../App.css';
 
 
 let fetchPrs = (setFunct,PrId)=>{
@@ -10,12 +10,16 @@ let fetchPrs = (setFunct,PrId)=>{
     .then(data => setFunct(data));
   }
 
-let closePr = (PrId)=>{
+let closePr = (PrId,setFunct,state_var)=>{
   fetch('http://127.0.0.1:8000/pr/'+PrId+'?status=closed', {
     method: 'PUT'
   })
   .then(response => response.json())
-  .then(data => console.log(data));
+  .then(data => console.log(data))
+  .then(setFunct({
+    ...state_var,
+    status: 'closed'
+  }));
 }
 
 let mergePr = (PrId,origin,destiny,setmsg)=>{
@@ -35,20 +39,23 @@ export default function Pr() {
       setMsg('')
     }, [params.PrId])
     return (
-        <div>
-          {prDetails.origin} ,
-          {prDetails.destiny} ,
-          {prDetails.status} ,
-          {prDetails.author} ,
-          {prDetails.title} ,
-          {prDetails.description} ,
+        <div style={{margin:"10px"}}>
+          <h1>
+            {prDetails.title}
+          </h1>
+          By: {prDetails.author}
+          <h3>
+            {prDetails.origin} -> {prDetails.destiny}
+          </h3>
+          {prDetails.status}
+          <div>{prDetails.description}</div>
           <button onClick={() => {
             mergePr(prDetails.id,prDetails.origin,prDetails.destiny,setMsg);
-          }}>merge</button>
+          }}>Merge</button>
           <button onClick={() => {
-            closePr(prDetails.id);
+            closePr(prDetails.id,setPrDetails,prDetails);
           }}>Close</button>
-          {msg}
+          <div>{msg}</div>
         </div>
     )
 }
