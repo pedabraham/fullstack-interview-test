@@ -15,7 +15,13 @@ let submitPr = (pr,cleanFun)=>{
     author: '',
     status: 'open',
   }));
-} 
+}
+
+let fetchbranches = (setFunct)=>{
+  fetch('http://127.0.0.1:8000/branches')
+  .then(response => response.json())
+  .then(data => setFunct(data.branches));
+}
 
 export default function AddPr() {
   const [form, setForm] = useState({
@@ -26,36 +32,46 @@ export default function AddPr() {
     author: '',
     status: 'open',
   });
-  
+  const [branches,setBranches] = useState([''])
+  useEffect(() => {
+    fetchbranches(setBranches)
+  }, [])
+  let branch_options = branches.map((branch) => (
+    <option value={branch} key={branch}>{branch}</option>
+  ))
+
 
   return (
-    <main style={{ padding: "1rem 0" }}>
-    
+    <main style={{ padding: "1rem 0" , display:"block"}}>
+
       <h2>Create Pull Request</h2>
+      <div>
       <label>
         Origin:
-        <input
-          value={form.origin}
-          onChange={e => {
-            setForm({
-              ...form,
-              origin: e.target.value
-            });
-          }}
-        />
+        <select value={form.origin} onChange={e => {
+          setForm({
+            ...form,
+            origin: e.target.value
+          });
+        }}>
+          {branch_options}
+            </select>
       </label>
+      ----->
       <label>
         Destiny:
-        <input
-          value={form.destiny}
-          onChange={e => {
-            setForm({
-              ...form,
-              destiny: e.target.value
-            });
-          }}
-        />
+        <select value={form.destiny} onChange={e => {
+          setForm({
+            ...form,
+            destiny: e.target.value
+          });
+        }}>
+          {branch_options}
+            </select>
       </label>
+      </div>
+      -
+      <div>
       <label>
         Title:
         <input
@@ -68,6 +84,9 @@ export default function AddPr() {
           }}
         />
       </label>
+      </div>
+      -
+      <div>
       <label>
         Description:
         <input
@@ -80,6 +99,9 @@ export default function AddPr() {
           }}
         />
       </label>
+      </div>
+      -
+      <div>
       <label>
         Author:
         <input
@@ -92,15 +114,13 @@ export default function AddPr() {
           }}
         />
       </label>
+      </div>
+      -
+      <div>
       <button onClick={() => {
         submitPr(form,setForm);
-      }}>Add</button>
-      <p>
-        {form.origin}{' '}
-        {form.destiny}{' '}
-        ({form.title})
-      </p>
+      }}>Create Pull Request</button>
+      </div>
     </main>
   );
 }
-
