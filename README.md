@@ -4,7 +4,7 @@ To use the Front go to the /git-ui folder and run:
 - npm install
 - npm start
 ## Backend
-To use the backend got to /git-api and run:
+To use the backend run:
 - pip install fastapi
 - pip install "uvicorn[standard]"
 - pip install GitPython
