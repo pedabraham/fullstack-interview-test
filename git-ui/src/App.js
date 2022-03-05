@@ -16,8 +16,8 @@ function App() {
           paddingBottom: "1rem",
         }}
       >
-        <Link to="/pull-requests">Pull Requests</Link> |{" "}
-        <Link to="/branches">Branches</Link>
+        <Link to="/prs">Pull Requests</Link> |{" "}
+        <Link to="/branchese">Branches</Link>
       </nav>
       <Outlet />
       </div>

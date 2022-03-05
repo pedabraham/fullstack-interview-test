@@ -7,10 +7,10 @@ import { BrowserRouter,
   Routes,
   Route,
 } from "react-router-dom";
-import Expenses from "./routes/expenses";
-import Invoices from "./routes/invoces";
 import Prs from "./routes/prs";
 import Branches from "./routes/branches";
+import Branchese from "./routes/only_branches";
+import OnlyPrs from "./routes/only_prs";
 import Branch from "./routes/branch";
 import Pr from "./routes/pr";
 import AddPr from "./routes/addpr";
@@ -31,6 +31,8 @@ ReactDOM.render(
           <Route path=":branch" element={<Branch />} />
         </Route>
         <Route path="add_pr" element={<AddPr />} />
+        <Route path="branchese" element={<Branchese />} />
+        <Route path="prs" element={<OnlyPrs />} />
 
         <Route
           path="*"
