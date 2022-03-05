@@ -17,13 +17,16 @@ export default function Branch() {
       fetchcommits(setCommits,params.branch)
     }, [params.branch])
     let commitsView = commits.map(commit => (
+      <div>
         <Link
         style={{ display: "block", margin: "1rem 0" }}
-        to={`/commits/${commit.name}`}
+        to={`/commits/${params.branch+'-'+commit.position}`}
         key={commit.msg}
       >
-        <div>{commit.msg} {commit.name} {commit.email}</div>
+      <div><h4>{commit.msg}</h4> {commit.name} {commit.email}</div>
       </Link>
+      ----
+      </div>
     ))
     return (
       <div>

@@ -14,10 +14,8 @@ import OnlyPrs from "./routes/only_prs";
 import Branch from "./routes/branch";
 import Pr from "./routes/pr";
 import AddPr from "./routes/addpr";
-
-
-
-
+import Commits from "./routes/commits";
+import Commit from "./routes/commit";
 
 
 ReactDOM.render(
@@ -30,10 +28,12 @@ ReactDOM.render(
         <Route path="branches" element={<Branches />} >
           <Route path=":branch" element={<Branch />} />
         </Route>
-        <Route path="add_pr" element={<AddPr />} />
         <Route path="branchese" element={<Branchese />} />
         <Route path="prs" element={<OnlyPrs />} />
-
+        <Route path="commits" element={<Commits />} >
+          <Route path=":commit" element={<Commit />} />
+        </Route>
+        <Route path="add_pr" element={<AddPr />} />
         <Route
           path="*"
           element={
