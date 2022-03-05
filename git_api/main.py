@@ -67,7 +67,7 @@ def update_pr(pr_id: int, status: str, db: Session = Depends(get_db)):
 
 
 @app.get('/commits')
-def get_commits(response:Response, branch: Optional[str] = None, position: Optional[int] = 0):
+def get_commits(response:Response, branch: Optional[str] = None):
     branch = branch if branch else 'HEAD'
     valid_branches = get_branches()
     valid_branches = valid_branches.get('branches',[])
@@ -75,9 +75,34 @@ def get_commits(response:Response, branch: Optional[str] = None, position: Optio
         response.status_code = 404
         return {'commits':[]}
     commits = list(repo.iter_commits(branch))
-    commits = [{'name': str(c.author), 'email': c.author.email,'msg': c.message, 'date': c.authored_date, 'files_change': len(c.stats.files)} for c in commits]
+    final_commits = list()
+    for i in range(len(commits)):
+        commit = commits[i]
+        final_commits.append({
+            'name': str(commit.author), 
+            'email': commit.author.email,
+            'msg': commit.message, 
+            'date': commit.authored_date, 
+            'files_change': len(commit.stats.files), 
+            'position':i})
     #'hash': c.hexsha
-    return {'commits':commits}  
+    return {'commits':final_commits}
+
+@app.get('/commit/{position}')
+def get_commits(response:Response, branch: Optional[str] = None, position: Optional[int] = 0):
+    branch = branch if branch else 'HEAD'
+    valid_branches = get_branches()
+    valid_branches = valid_branches.get('branches',[])
+    if branch not in valid_branches and branch != 'HEAD':
+        response.status_code = 404
+        return {}
+    commits = list(repo.iter_commits(branch))
+    if len(commits) <= position:
+        response.status_code = 404
+        return {}
+    commit = commits[position]
+    return {'name': str(commit.author), 'email': commit.author.email,'msg': commit.message, 'date': commit.authored_date, 'files_change': len(commit.stats.files)}
+
 
 @app.get('/branches')
 def get_branches():
