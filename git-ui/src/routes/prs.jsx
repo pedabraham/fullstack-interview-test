@@ -8,13 +8,13 @@ let fetchPrs = (setFunct)=>{
 }
 
 export default function Prs() {
-    const [Prs,setPrs] = useState([])
+    const [prs,setPrs] = useState([])
     useEffect(() => {
       fetchPrs(setPrs)
     }, [])
-    let bhtml = Prs.map((pr) => (
+    let bhtml = prs.map((pr) => (
       <Link
-        style={{ display: "block", margin: "1rem 0" }}
+        style={{ display: "block", margin: "1rem" }}
         to={`/pull-requests/${pr.id}`}
         key={pr.id}
       >
@@ -22,25 +22,25 @@ export default function Prs() {
       </Link>
       ))
     return (
-        <main style={{ padding: "1rem 0" }}>
+        <main style={{ padding: "1rem 4rem" }}>
         <h2>Pull Reuests</h2>
         <Link
-        style={{ display: "block", margin: "1rem 0" }}
+          style={{ display: "block", margin: "1rem 0", padding: '10px'}}
         to={`/add_pr`}
         >
+        <button>
           create pull request
+          </button>
         </Link>
-        <div style={{ display: "flex" }}>
-        <nav
-          style={{
-            borderRight: "solid 1px",
-            padding: "1rem",
-          }}
-          >
-        {bhtml}
-
-        </nav>
-        <Outlet />
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: '300px auto'}} ClassName="view">
+          <nav ClassName="left">
+            {bhtml}
+          </nav>
+            <div ClassName="right">
+            <Outlet />
+            </div>
         </div>
         </main>
     );

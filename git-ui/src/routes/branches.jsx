@@ -22,21 +22,21 @@ export default function Branches() {
       </Link>
       ))
     return (
-      <>
+      <main style={{ padding: "1rem 4rem" }}>
       <h2>Branches</h2>
-      <div style={{ display: "flex" }}>
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: '300px auto'}}>
       <nav
         style={{
-          borderRight: "solid 1px",
+
           padding: "1rem",
         }}
         >
-      {bhtml}
-        
+          {bhtml}
       </nav>
       <Outlet />
     </div>
-        </>
+        </main>
     );
   }
-
